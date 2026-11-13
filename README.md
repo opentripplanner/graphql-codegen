@@ -121,3 +121,10 @@ mvn verify
 The build formats the code with [Spotless](https://github.com/diffplug/spotless) and Prettier, so
 `node` and `npm` must be on the `PATH`. Use `-Dplugin.spotless.goal=check` to only check the
 formatting, or `-Dplugin.spotless.skip` to skip it.
+
+## License
+
+[MIT](LICENSE). The design and configuration format are based on
+[GraphQL Code Generator](https://github.com/dotansimha/graphql-code-generator) and its
+[java plugins](https://github.com/dotansimha/graphql-code-generator-community), which are also
+MIT-licensed. See the [LICENSE](LICENSE) file for details.
