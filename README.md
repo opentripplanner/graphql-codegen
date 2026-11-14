@@ -128,7 +128,7 @@ signing key.
 ### Releasing
 
 ```sh
-
+make release
 ```
 
 ## License
