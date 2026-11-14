@@ -122,6 +122,17 @@ The build formats the code with [Spotless](https://github.com/diffplug/spotless)
 `node` and `npm` must be on the `PATH`. Use `-Dplugin.spotless.goal=check` to only check the
 formatting, or `-Dplugin.spotless.skip` to skip it.
 
+The artifacts are signed with GPG in the `verify` phase. Use `-Dgpg.skip` if you don't have the
+signing key.
+
+### Releasing
+
+```sh
+git tag 0.0.4 -m "Release 0.0.4"
+mvn clean deploy
+git push --tags
+```
+
 ## License
 
 [MIT](LICENSE). The design and configuration format are based on
