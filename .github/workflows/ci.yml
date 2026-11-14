@@ -25,4 +25,4 @@ jobs:
         with:
           node-version: 24
       - name: Build and test
-        run: mvn --batch-mode verify -Dplugin.spotless.goal=check
+        run: mvn --batch-mode verify -Dplugin.spotless.goal=check -Dgpg.skip
