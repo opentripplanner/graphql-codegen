@@ -1,0 +1,20 @@
+schema: schema.graphqls
+
+generates:
+  AppTypes.java:
+    plugins:
+      - java
+    config:
+      className: AppTypes
+      listType: List
+  AppDataFetchers.java:
+    plugins:
+      - java-resolvers
+    config:
+      className: AppDataFetchers
+
+config:
+  package: org.example.generated
+  typesPrefix: GraphQL
+  mappers:
+    Stop: org.example.app.Stop#Stop
