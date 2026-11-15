@@ -1,73 +1,47 @@
 # GraphQL code generator
 
-A build-time tool that generates Java types and data fetcher interfaces for a GraphQL API from its
+A Maven plugin that generates Java types and data fetcher interfaces for a GraphQL API from its
 schema.
 
 ## Requirements
 
-Java 25 or newer.
+Java 25 or newer and Maven 3.9.0 or newer.
 
 ## Usage
 
-Run `org.opentripplanner.graphql.codegen.GraphQLCodegen <config.yml> <output-source-directory>`.
-Typically you run it with `exec-maven-plugin` in the `generate-sources` phase, and add the output
-directory as a source root with `build-helper-maven-plugin`. Write the output under `target/` so
-that it is not committed.
+The `generate` goal runs in the `generate-sources` phase. It writes the code to
+`target/generated-sources/graphql` and adds that directory as a source root, so no other plugins are
+needed.
 
 A file is only rewritten when its content changes, so an unchanged schema does not force a
 recompile. The generated members follow the schema order. The code is not formatted for readability.
 
 ```xml
 <plugin>
-  <groupId>org.codehaus.mojo</groupId>
-  <artifactId>exec-maven-plugin</artifactId>
-  <version>3.6.4</version>
+  <groupId>org.opentripplanner</groupId>
+  <artifactId>graphql-codegen</artifactId>
+  <version>${graphql-codegen.version}</version>
   <executions>
     <execution>
-      <id>graphql-codegen</id>
-      <phase>generate-sources</phase>
       <goals>
-        <goal>java</goal>
+        <goal>generate</goal>
       </goals>
       <configuration>
-        <mainClass>org.opentripplanner.graphql.codegen.GraphQLCodegen</mainClass>
-        <includeProjectDependencies>false</includeProjectDependencies>
-        <includePluginDependencies>true</includePluginDependencies>
-        <cleanupDaemonThreads>false</cleanupDaemonThreads>
-        <arguments>
-          <argument>${project.basedir}/src/build/graphql-codegen.yml</argument>
-          <argument>${project.build.directory}/generated-sources/graphql</argument>
-        </arguments>
-      </configuration>
-    </execution>
-  </executions>
-  <dependencies>
-    <dependency>
-      <groupId>org.opentripplanner</groupId>
-      <artifactId>graphql-codegen</artifactId>
-      <version>${graphql-codegen.version}</version>
-    </dependency>
-  </dependencies>
-</plugin>
-<plugin>
-  <groupId>org.codehaus.mojo</groupId>
-  <artifactId>build-helper-maven-plugin</artifactId>
-  <executions>
-    <execution>
-      <id>add-graphql-sources</id>
-      <phase>generate-sources</phase>
-      <goals>
-        <goal>add-source</goal>
-      </goals>
-      <configuration>
-        <sources>
-          <source>${project.build.directory}/generated-sources/graphql</source>
-        </sources>
+        <configFile>${project.basedir}/src/build/graphql-codegen.yml</configFile>
       </configuration>
     </execution>
   </executions>
 </plugin>
 ```
+
+| Parameter         | Property                          | Default                                                |
+| ----------------- | --------------------------------- | ------------------------------------------------------ |
+| `configFile`      | `graphql-codegen.configFile`      | required                                               |
+| `outputDirectory` | `graphql-codegen.outputDirectory` | `${project.build.directory}/generated-sources/graphql` |
+| `skip`            | `graphql-codegen.skip`            | `false`                                                |
+
+In a project that declares the plugin, you can also run it on its own with
+`mvn graphql-codegen:generate`.
 
 For a real-world example, see the GTFS GraphQL API in OpenTripPlanner: the `application/pom.xml` and
 `application/src/build/gtfs-graphql-codegen.yml` files.
@@ -121,6 +95,10 @@ mvn verify
 The build formats the code with [Spotless](https://github.com/diffplug/spotless) and Prettier, so
 `node` and `npm` must be on the `PATH`. Use `-Dplugin.spotless.goal=check` to only check the
 formatting, or `-Dplugin.spotless.skip` to skip it.
+
+The integration tests in `src/it` build sample projects with the plugin, using
+[maven-invoker-plugin](https://maven.apache.org/plugins/maven-invoker-plugin/). Use `-Dinvoker.skip`
+to skip them.
 
 The artifacts are signed with GPG in the `verify` phase. Use `-Dgpg.skip` if you don't have the
 signing key.

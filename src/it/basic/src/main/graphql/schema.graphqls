@@ -1,0 +1,17 @@
+type Query {
+  stops(filter: StopFilter, first: Int): [Stop!]!
+}
+
+type Stop {
+  name: String!
+  mode: Mode
+}
+
+enum Mode {
+  BUS
+  TRAM
+}
+
+input StopFilter {
+  modes: [Mode!]
+}

@@ -15,28 +15,17 @@ import org.opentripplanner.graphql.codegen.CodegenConfig.OutputFile;
 /**
  * Generates Java types and data fetcher interfaces for a GraphQL API from its schema.
  * The generated members follow the schema order, and the generated code is not formatted
- * for readability.
- * <p>
- * Usage: {@code GraphQLCodegen <config.yml> <output-source-directory>}
+ * for readability. Run it with the {@link GenerateMojo generate} goal of the Maven plugin.
  * <p>
  * A file is only written when its content changes, so an unchanged schema does not force the
  * generated sources, and everything that depends on them, to be recompiled.
  */
-public final class GraphQLCodegen {
+final class GraphQLCodegen {
 
   private GraphQLCodegen() {}
 
-  public static void main(String[] args) throws IOException {
-    if (args.length != 2) {
-      throw new IllegalArgumentException(
-        "Usage: GraphQLCodegen <config.yml> <output-source-directory>"
-      );
-    }
-    generate(Path.of(args[0]), Path.of(args[1]));
-  }
-
   /** Generates all files listed in {@code configFile} into the source root {@code outputDir}. */
-  public static void generate(Path configFile, Path outputDir) throws IOException {
+  static void generate(Path configFile, Path outputDir) throws IOException {
     CodegenConfig config = CodegenConfig.read(configFile);
     TypeDefinitionRegistry registry = new SchemaParser().parse(config.schema().toFile());
     assertNoTypeExtensions(registry, config.schema());
