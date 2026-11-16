@@ -6,6 +6,7 @@ import com.palantir.javapoet.ParameterizedTypeName;
 import com.palantir.javapoet.TypeName;
 import com.palantir.javapoet.TypeSpec;
 import graphql.language.Description;
+import graphql.language.DirectivesContainer;
 import graphql.language.ListType;
 import graphql.language.NonNullType;
 import graphql.language.Type;
@@ -150,6 +151,11 @@ final class CodegenContext {
     if (!content.isEmpty()) {
       builder.addJavadoc("$L\n", content.replace("*/", "*\\/"));
     }
+  }
+
+  /** Whether a schema element has the {@code @deprecated} directive. */
+  static boolean isDeprecated(DirectivesContainer<?> element) {
+    return element.hasDirective("deprecated");
   }
 
   JavaFile toJavaFile(TypeSpec type) {

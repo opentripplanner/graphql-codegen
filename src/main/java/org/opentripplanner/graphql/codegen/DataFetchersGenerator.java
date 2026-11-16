@@ -45,12 +45,13 @@ final class DataFetchersGenerator {
     );
     CodegenContext.addJavadoc(builder, type.getDescription());
     for (FieldDefinition field : type.getFieldDefinitions()) {
-      builder.addMethod(
-        MethodSpec.methodBuilder(field.getName())
-          .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-          .returns(ParameterizedTypeName.get(DATA_FETCHER, fieldType(field)))
-          .build()
-      );
+      var method = MethodSpec.methodBuilder(field.getName())
+        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+        .returns(ParameterizedTypeName.get(DATA_FETCHER, fieldType(field)));
+      if (CodegenContext.isDeprecated(field)) {
+        method.addAnnotation(Deprecated.class);
+      }
+      builder.addMethod(method.build());
     }
     return builder.build();
   }

@@ -100,13 +100,14 @@ final class TypesGenerator {
       );
       constructorBody.add(assignFromArgs(field.getName(), fieldName, type));
       nullAssignments.addStatement("this.$N = null", fieldName);
-      getters.add(
-        MethodSpec.methodBuilder("get" + context.javaTypeName(field.getName()))
-          .addModifiers(Modifier.PUBLIC)
-          .returns(type.javaType())
-          .addStatement("return this.$N", fieldName)
-          .build()
-      );
+      var getter = MethodSpec.methodBuilder("get" + context.javaTypeName(field.getName()))
+        .addModifiers(Modifier.PUBLIC)
+        .returns(type.javaType())
+        .addStatement("return this.$N", fieldName);
+      if (CodegenContext.isDeprecated(field)) {
+        getter.addAnnotation(Deprecated.class);
+      }
+      getters.add(getter.build());
     }
 
     builder.addMethod(
