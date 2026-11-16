@@ -13,6 +13,7 @@ enum Mode {
 input FilterInput {
   modes: [Mode]
   name: String
+  stopName: String @deprecated(reason: "Use name")
 }
 
 input Nested {
@@ -33,6 +34,7 @@ type Station implements Node {
 
 type Route {
   mode: Mode
+  type: Int @deprecated(reason: "Use mode")
 }
 
 type QueryType {

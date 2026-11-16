@@ -91,6 +91,15 @@ class GraphQLCodegenTest {
   }
 
   @Test
+  void deprecatedFieldIsAnnotated() {
+    assertContains(dataFetchers, "@Deprecated DataFetcher<Integer> type();");
+    assertContains(dataFetchers, "DataFetcher<TransitMode> mode();");
+    assertFalse(dataFetchers.contains("@Deprecated DataFetcher<TransitMode> mode();"));
+    assertContains(types, "@Deprecated public String getGraphQLStopName() {");
+    assertFalse(types.contains("@Deprecated public String getGraphQLName() {"));
+  }
+
+  @Test
   void noInterfacesForInterfaceAndUnionTypes() {
     assertFalse(dataFetchers.contains("GraphQLNode "));
     assertFalse(dataFetchers.contains("GraphQLStopOrStation "));
